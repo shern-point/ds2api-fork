@@ -80,7 +80,6 @@ func TestBuildOpenAICurrentInputContextTranscriptUsesInjectedFileWrapper(t *test
 	if !strings.Contains(transcript, "<|DSML|tool_calls>") {
 		t.Fatalf("expected tool calls preserved, got %q", transcript)
 	}
-
 }
 
 func TestSplitOpenAIHistoryMessagesUsesLatestUserTurn(t *testing.T) {
@@ -336,8 +335,8 @@ func TestApplyCurrentInputFilePreservesFullContextPromptForTokenCounting(t *test
 	if !strings.Contains(out.PromptTokenText, "first user turn") || !strings.Contains(out.PromptTokenText, "latest user turn") {
 		t.Fatalf("expected prompt token text to contain file context with full conversation, got %q", out.PromptTokenText)
 	}
-	if !strings.Contains(out.PromptTokenText, "[file content end]") || !strings.Contains(out.PromptTokenText, "[file name]: IGNORE") {
-		t.Fatalf("expected prompt token text to include IGNORE.txt file wrapper, got %q", out.PromptTokenText)
+	if strings.Contains(out.PromptTokenText, "[file content end]") || strings.Contains(out.PromptTokenText, "[file content begin]") || strings.Contains(out.PromptTokenText, "[file name]:") {
+		t.Fatalf("expected prompt token text to use plain uploaded transcript, got %q", out.PromptTokenText)
 	}
 	if !strings.Contains(out.PromptTokenText, "Answer the latest user request directly.") {
 		t.Fatalf("expected prompt token text to also include neutral live prompt, got %q", out.PromptTokenText)
